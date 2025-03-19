@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Head Movement Detection</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <style>
+        body { text-align: center; font-family: Arial, sans-serif; }
+        #status_tilt { font-size: 24px; font-weight: bold; color: blue; }
+        #status_nod { font-size: 24px; font-weight: bold; color: red; }
+        #angles { font-size: 20px; font-weight: bold; color: green; }
+        video, img { width: 60%; border: 3px solid black; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Live Head Movement Detection</h1>
+    <h2>Movement (Tilt): <span id="status_tilt">Waiting...</span></h2>
+    <h2>Movementx (Nod): <span id="status_nod">Waiting...</span></h2>
+    <h2 id="angles">Tilt Angle: 0° | Nod Angle: 0°</h2>
+
+    <!-- Live Video Stream -->
+    <img id="videoFeed" src="{{ url_for('video_feed') }}" />
+
+    <script>
+        var socket = io.connect("http://localhost:5000");
+
+        socket.on("head_movement", function(data) {
+            document.getElementById("status_tilt").innerText = data.movement; // Tilt Movement
+            document.getElementById("status_nod").innerText = data.movementx; // Nod Movement
+            document.getElementById("angles").innerText = "Tilt Angle: " + data.tilt_angle + "° | Nod Angle: " + data.nod_angle + "°";
+        });
+    </script>
+</body>
+</html>
