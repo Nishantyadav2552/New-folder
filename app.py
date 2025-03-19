@@ -59,19 +59,17 @@ def detect_head_movement():
 
                 # **Calculate vertical nod angle (Up/Down)**
                 eye_center_y = (left_eye[1] + right_eye[1]) / 2  # Midpoint of both eyes
-                nod_angle = (nose[1] - eye_center_y) * 180  # Convert to degrees scale
+                nod_angle = (nose[1] - eye_center_y) * 100  # Convert to degrees scale
 
-                # **Determine up/down nod using angle difference**
+                # **Determine up/down nod**
                 if prev_nose_y is not None:
-                    diff_y = nod_angle - prev_nose_y  # Difference in nod angle
-
-                    if diff_y > 2:  # Adjusted threshold for nodding down
+                    diff_y = nose[1] - prev_nose_y
+                    if diff_y > nodding_threshold:
                         movementx = "Nodding Down"
-                    elif diff_y < -2:  # Adjusted threshold for nodding up
+                    elif diff_y < -nodding_threshold:
                         movementx = "Nodding Up"
 
-                prev_nose_y = nod_angle  # Update previous nod angle
-
+                prev_nose_y = nose[1]
 
                 # **Display movement text properly**
                 cv2.putText(frame, f"Movement: {movement}", (20, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
